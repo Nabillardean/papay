@@ -500,21 +500,27 @@ spawnFalling('🌸','petal',8,9000);
   spawnFalling('✨','sparkle-fall',6,7000);
   spawnFalling('💗','heart-fall',2,12000);
 }
-function spawnFalling(char, cls, count, duration){
+function createFallItem(char, cls, duration){
   const sky=$('sky-layer');
+  const el=document.createElement('div');
+  el.className=cls; el.textContent=char;
+  el.style.left=Math.random()*100+'%';
+  el.style.fontSize=(12+Math.random()*10)+'px';
+  el.style.setProperty('--drift',(Math.random()*80-40)+'px');
+  el.style.animation=`fallDown ${duration/1000+Math.random()*4}s linear`;
+  sky.appendChild(el);
+  setTimeout(()=>el.remove(), duration+4000);
+}
+function spawnFalling(char, cls, count, duration){
   for(let i=0;i<count;i++){
-    setTimeout(()=>{
-      const el=document.createElement('div');
-      el.className=cls; el.textContent=char;
-      el.style.left=Math.random()*100+'%';
-      el.style.fontSize=(12+Math.random()*10)+'px';
-      el.style.setProperty('--drift',(Math.random()*80-40)+'px');
-      el.style.animation=`fallDown ${duration/1000+Math.random()*4}s linear`;
-      sky.appendChild(el);
-      setTimeout(()=>el.remove(), duration+4000);
-    }, Math.random()*duration);
+    setTimeout(()=>createFallItem(char,cls,duration), Math.random()*duration);
   }
-  setInterval(()=>spawnFalling(char,cls,1,duration), duration/count);
+  setInterval(()=>createFallItem(char,cls,duration), duration/count);
+}
+function burstFalling(char, cls, count, duration){
+  for(let i=0;i<count;i++){
+    setTimeout(()=>createFallItem(char,cls,duration), Math.random()*600);
+  }
 }
 initSky();
 
@@ -807,8 +813,8 @@ function doHug(){
   fireConfetti();
   const btnWrap = event.currentTarget.parentElement;
   btnWrap.innerHTML = `<div class="cat-hug hugging">🐱💗🐱</div>`;
- spawnFalling('🌸','petal',6,3000);
-  spawnFalling('💗','heart-fall',5,3000);
+burstFalling('🌸','petal',6,3000);
+  burstFalling('💗','heart-fall',5,3000);
   setTimeout(()=>{ $('final-line').style.opacity=1; }, 900);
 }
 

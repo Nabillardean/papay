@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Untuk Papayyyy 🌸</title>
+
+<!-- =========================================================
+     FONTS — Fredoka (judul), Poppins (badan), Nunito (aksen)
+========================================================= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Confetti library (untuk efek confetti) -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+<style>
+/* =========================================================
+   ⚙️ EDIT ZONE #1 — WARNA (gampang diganti di sini)
+========================================================= */
+:root{
+  --pink: #ffd7e6;
+  --pink-deep: #ffb3d1;
+  --cream: #fff8f0;
+  --white: #ffffff;
+  --lavender: #f1ecfb;
+  --matcha: #cfe8d6;
+  --matcha-deep: #a9d5b6;
+  --text: #6b5b6e;
+  --text-soft: #9c8aa0;
+  --shadow: 0 8px 24px rgba(255, 179, 209, 0.25);
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{
+  margin:0; padding:0; overflow-x:hidden;
+  font-family:'Poppins', sans-serif;
+  color:var(--text);
+  background:linear-gradient(180deg, var(--lavender) 0%, var(--pink) 45%, var(--cream) 100%);
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 32 32'%3E%3Ctext x='0' y='24' font-size='26'%3E🌸%3C/text%3E%3C/svg%3E") 14 14, auto;
+}
+h1,h2,h3,.font-title{ font-family:'Fredoka', sans-serif; }
+.font-accent{ font-family:'Nunito', sans-serif; }
+
+::selection{ background:var(--matcha); }
+
+/* ---------- utility ---------- */
+.screen{
+  position:fixed; inset:0; width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .7s ease;
+  overflow-y:auto;
+}
+.screen.active{ opacity:1; visibility:visible; pointer-events:auto; }
+.screen-inner{ width:100%; max-width:520px; margin:0 auto; padding:24px 20px 100px; }
+
+.btn-cute{
+  font-family:'Fredoka', sans-serif; font-weight:600; font-size:17px;
+  color:var(--text); background:var(--white);
+  border:2px solid var(--pink-deep); border-radius:999px;
+  padding:14px 30px; box-shadow:var(--shadow);
+  cursor:pointer; transition:transform .25s ease, box-shadow .25s ease;
+  -webkit-user-select:none; user-select:none;
+}
+.btn-cute:hover{ transform:translateY(-3px) scale(1.04); box-shadow:0 12px 28px rgba(255,179,209,.4); }
+.btn-cute:active{ transform:scale(.96); }
+
+.card{
+  background:rgba(255,255,255,.75); backdrop-filter:blur(6px);
+  border-radius:28px; box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,.6);
+}
+
+.top-bar{
+  position:fixed; top:0; left:0; right:0; z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px;
+}
+.back-btn{
+  width:42px; height:42px; border-radius:50%; background:var(--white);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow); font-size:18px; cursor:pointer; border:none;
+}
+
+/* ---------- background sky layer ---------- */
+#sky-layer{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; transition:filter 1s ease, background 1.2s ease; }
+.cloud{ position:absolute; opacity:.8; filter:drop-shadow(0 4px 6px rgba(0,0,0,.03)); animation:driftCloud linear infinite; }
+@keyframes driftCloud{ from{ transform:translateX(-20vw);} to{ transform:translateX(120vw);} }
+
+.petal, .sparkle-fall, .heart-fall{ position:absolute; top:-40px; pointer-events:none; will-change:transform; }
+@keyframes fallDown{
+  0%{ transform:translateY(-5vh) translateX(0) rotate(0deg); opacity:0; }
+  10%{ opacity:1; }
+  100%{ transform:translateY(105vh) translateX(var(--drift,20px)) rotate(360deg); opacity:.2; }
+}
+
+/* ---------- sparkle burst on click ---------- */
+.click-sparkle{ position:fixed; pointer-events:none; z-index:9999; font-size:16px; animation:sparklePop .7s ease-out forwards; }
+@keyframes sparklePop{ 0%{ transform:translate(0,0) scale(.4); opacity:1;} 100%{ transform:translate(var(--sx),var(--sy)) scale(1.1); opacity:0;} }
+
+/* ---------- loading screen ---------- */
+#loading-screen{ z-index:100; background:linear-gradient(180deg, var(--lavender), var(--pink)); }
+.cat-walk{ font-size:54px; display:inline-block; animation:catBob 1s ease-in-out infinite; }
+@keyframes catBob{ 0%,100%{ transform:translateY(0) rotate(-2deg);} 50%{ transform:translateY(-6px) rotate(2deg);} }
+.progress-track{ width:220px; height:12px; background:var(--white); border-radius:999px; overflow:hidden; box-shadow:inset 0 2px 4px rgba(0,0,0,.08); }
+.progress-fill{ height:100%; background:linear-gradient(90deg, var(--pink-deep), var(--matcha-deep)); border-radius:999px; transition:width .3s ease; }
+
+/* ---------- landing ---------- */
+.landing-line{ opacity:0; transform:translateY(10px); transition:opacity .8s ease, transform .8s ease; font-family:'Fredoka'; font-size:22px; text-align:center; margin:6px 0; }
+.landing-line.show{ opacity:1; transform:translateY(0); }
+
+/* ---------- home cards ---------- */
+.home-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.home-card{
+  aspect-ratio:1/1; border-radius:26px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  background:var(--white); box-shadow:var(--shadow); cursor:pointer; position:relative; overflow:hidden;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+  border:2px solid rgba(255,255,255,.8);
+}
+.home-card:hover{ transform:scale(1.06) rotate(-1deg); box-shadow:0 16px 34px rgba(255,179,209,.45); }
+.home-card:active{ transform:scale(.95); }
+.home-card .emoji{ font-size:38px; }
+.home-card .label{ font-family:'Fredoka'; font-weight:600; font-size:15px; }
+.home-card.locked{ opacity:.5; filter:grayscale(.3); }
+.ripple{ position:absolute; border-radius:50%; background:rgba(255,179,209,.5); transform:scale(0); animation:rippleAnim .6s ease-out; pointer-events:none; }
+@keyframes rippleAnim{ to{ transform:scale(3); opacity:0; } }
+
+/* ---------- polaroid gallery ---------- */
+.polaroid-wrap{ display:flex; flex-wrap:wrap; gap:20px; justify-content:center; padding-top:10px; }
+.polaroid{
+  background:var(--white); padding:10px 10px 26px; border-radius:6px; width:130px;
+  box-shadow:0 10px 18px rgba(0,0,0,.12); cursor:pointer;
+  transform:rotate(var(--rot,0deg)); transition:transform .3s ease, box-shadow .3s ease;
+}
+.polaroid:hover{ transform:rotate(0deg) scale(1.06) translateY(-4px); box-shadow:0 16px 26px rgba(0,0,0,.18); }
+.polaroid .ph{
+  width:100%; aspect-ratio:1/1; border-radius:2px;
+  background:linear-gradient(135deg,var(--pink),var(--lavender));
+  display:flex; align-items:center; justify-content:center; font-size:30px;
+}
+.polaroid .cap{ font-family:'Nunito'; font-size:11px; text-align:center; margin-top:8px; color:var(--text-soft); }
+.polaroid .sticker{ position:absolute; font-size:16px; }
+
+#lightbox{ position:fixed; inset:0; background:rgba(107,91,110,.55); backdrop-filter:blur(8px); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .35s ease; }
+#lightbox.active{ opacity:1; pointer-events:auto; }
+#lightbox .big-ph{ width:min(80vw,320px); aspect-ratio:1/1; overflow:hidden; background:linear-gradient(135deg,var(--pink),var(--lavender)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:64px; box-shadow:0 20px 50px rgba(0,0,0,.3); border:8px solid white; }
+
+/* ---------- cat game ---------- */
+#catgame-area{ position:relative; width:100%; height:56vh; border-radius:24px; overflow:hidden; background:linear-gradient(180deg,var(--matcha) 0%, var(--matcha-deep) 100%); }
+.runner-cat{ position:absolute; font-size:36px; cursor:pointer; transition:transform .15s ease; user-select:none; }
+.runner-cat:hover{ transform:scale(1.15); }
+
+/* ---------- garden ---------- */
+.garden-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.bud{
+  aspect-ratio:1/1; border-radius:18px; background:var(--white); display:flex; align-items:center; justify-content:center;
+  font-size:26px; cursor:pointer; box-shadow:var(--shadow); transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.bud.bloomed{ transform:scale(1.1) rotate(6deg); background:linear-gradient(135deg,var(--pink),var(--matcha)); }
+#garden-scene{ position:relative; min-height:60px; }
+.butterfly, .bird{ position:absolute; font-size:22px; animation:flutter 6s ease-in-out infinite; }
+@keyframes flutter{ 0%,100%{ transform:translate(0,0);} 25%{ transform:translate(20px,-14px);} 50%{ transform:translate(40px,4px);} 75%{ transform:translate(15px,-8px);} }
+
+/* ---------- gift box ---------- */
+.gift-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.gift{
+  aspect-ratio:1/1; border-radius:22px; background:var(--white); box-shadow:var(--shadow);
+  display:flex; align-items:center; justify-content:center; font-size:34px; cursor:pointer;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.gift:hover{ transform:scale(1.08) rotate(-2deg); }
+.gift.opened{ background:var(--lavender); cursor:default; }
+
+/* ---------- idle cat ---------- */
+#idle-cat{
+  position:fixed; bottom:-140px; left:50%; transform:translateX(-50%); z-index:150;
+  transition:bottom .6s cubic-bezier(.34,1.56,.64,1);
+  display:flex; flex-direction:column; align-items:center; pointer-events:none;
+}
+#idle-cat.show{ bottom:20px; }
+#idle-cat .bubble{ background:var(--white); border-radius:16px; padding:8px 14px; font-family:'Nunito'; font-weight:700; font-size:13px; box-shadow:var(--shadow); margin-bottom:6px; }
+#idle-cat .emoji{ font-size:48px; }
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-20px); z-index:300;
+  background:var(--white); padding:12px 22px; border-radius:999px; box-shadow:var(--shadow);
+  font-family:'Fredoka'; font-weight:600; opacity:0; transition:opacity .3s ease, transform .3s ease; pointer-events:none;
+}
+#toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- easter eggs ---------- */
+.egg{
+  position:fixed; z-index:30; font-size:14px; opacity:.35; cursor:pointer;
+  transition:transform .25s ease, opacity .25s ease; filter:saturate(.6);
+}
+.egg:hover{ transform:scale(1.3); opacity:.7; }
+.egg.found{ display:none; }
+
+#egg-counter{
+  position:fixed; top:14px; right:14px; z-index:60; background:var(--white); border-radius:999px;
+  padding:6px 12px; font-size:12px; font-family:'Nunito'; font-weight:700; box-shadow:var(--shadow);
+}
+
+/* ---------- secret / night ---------- */
+#secret-screen{ background:radial-gradient(ellipse at top, #2b2450 0%, #1a1533 70%); color:#f2ecff; }
+.star{ position:absolute; background:white; border-radius:50%; animation:twinkle 2.4s ease-in-out infinite; }
+@keyframes twinkle{ 0%,100%{ opacity:.2;} 50%{ opacity:1;} }
+.firefly{ position:absolute; font-size:10px; animation:flutter 8s ease-in-out infinite; filter:drop-shadow(0 0 6px #ffe89a); }
+.secret-line{ opacity:0; transform:translateY(8px); transition:opacity .9s ease, transform .9s ease; text-align:center; font-family:'Fredoka'; font-size:19px; margin:8px 0; }
+.secret-line.show{ opacity:1; transform:translateY(0); }
+#hug-stage{ text-align:center; }
+.cat-hug{ font-size:80px; display:inline-block; }
+.cat-hug.hugging{ animation:hugPulse .6s ease; }
+@keyframes hugPulse{ 0%{ transform:scale(1);} 40%{ transform:scale(1.25) rotate(-4deg);} 100%{ transform:scale(1.05);} }
+
+/* section title */
+.sec-title{ font-family:'Fredoka'; font-weight:600; font-size:24px; text-align:center; margin:6px 0 4px; }
+.sec-sub{ font-family:'Nunito'; font-size:13px; text-align:center; color:var(--text-soft); margin-bottom:18px; }
+
+@media (min-width:640px){
+  .home-grid{ grid-template-columns:repeat(3,1fr); }
+  .gift-grid{ grid-template-columns:repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ambient sky -->
+<div id="sky-layer"></div>
+<div id="egg-counter">🥚 0/19</div>
+<div id="toast"></div>
+
+<!-- =========================================================
+     🎵 EDIT ZONE #2 — MUSIK (ganti src dengan file mu)
+========================================================= -->
+<audio id="bg-music" loop preload="none">
+  <!-- Ganti URL di bawah dengan file musik piano lembut milikmu -->
+  <source src="REPLACE_WITH_YOUR_MUSIC_URL.mp3" type="audio/mpeg">
+</audio>
+<button id="music-btn" class="btn-cute" style="position:fixed; bottom:16px; right:16px; z-index:250; padding:10px 16px; font-size:14px; display:none;">🎵 Play Music</button>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loading-screen" class="screen active">
+  <div style="text-align:center;">
+    <div class="cat-walk">🐱🌷</div>
+    <h2 class="font-title" id="loading-text" style="margin:18px 0 14px; font-size:18px;">Menyiapkan sesuatu...</h2>
+    <div class="progress-track"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ============ LANDING ============ -->
+<div id="landing-screen" class="screen">
+  <div class="screen-inner" style="text-align:center;">
+    <p class="landing-line" id="line1">Hai Papayyyy 👋</p>
+    <p class="landing-line" id="line2">Aku bikin sesuatu kecil buat kamu.</p>
+    <p class="landing-line" id="line3">Semoga bisa bikin kamu senyum.</p>
+    <div id="enter-btn-wrap" style="opacity:0; transition:opacity 1s ease; margin-top:26px;">
+      <button class="btn-cute" onclick="goToHome()">✨ Masuk Yuk ✨</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HOME ============ -->
+<div id="home-screen" class="screen">
+  <div class="screen-inner">
+    <h1 class="sec-title">Dunia Kecil Papayyyy 🌸</h1>
+    <p class="sec-sub">pilih salah satu, ya~</p>
+    <div class="home-grid">
+      <div class="home-card" onclick="rippleThenGo(event,'gallery')"><span class="emoji">📷</span><span class="label">Gallery</span></div>
+      <div class="home-card" onclick="rippleThenGo(event,'catgame')"><span class="emoji">🐱</span><span class="label">Cat Game</span></div>
+      <div class="home-card" onclick="rippleThenGo(event,'garden')"><span class="emoji">🌸</span><span class="label">Flower Garden</span></div>
+      <div class="home-card" onclick="rippleThenGo(event,'giftbox')"><span class="emoji">🎁</span><span class="label">Gift Box</span></div>
+      <div class="home-card" id="secret-card" onclick="rippleThenGo(event,'locked')"><span class="emoji">⭐</span><span class="label" id="secret-label">Secret 🔒</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GALLERY ============ -->
+<div id="gallery-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="sec-title">Gallery 📷</h2>
+    <p class="sec-sub">geser / klik foto buat liat lebih besar</p>
+    <div class="polaroid-wrap" id="polaroid-wrap"></div>
+  </div>
+</div>
+<div id="lightbox" onclick="closeLightbox()">
+  <div class="big-ph" id="lightbox-photo" onclick="event.stopPropagation()">📸</div>
+</div>
+
+<!-- ============ CAT GAME ============ -->
+<div id="catgame-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="sec-title">Cat Game 🐱</h2>
+    <p class="sec-sub" id="cat-progress">Tangkap 10 kucing! (0/10)</p>
+    <div id="catgame-area"></div>
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn-cute" onclick="startCatGame()">Mulai 🐾</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GARDEN ============ -->
+<div id="garden-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="sec-title">Flower Garden 🌷</h2>
+    <p class="sec-sub" id="garden-progress">Klik bunga buat mekarin (0/12)</p>
+    <div id="garden-scene"></div>
+    <div class="garden-grid" id="garden-grid"></div>
+  </div>
+</div>
+
+<!-- ============ GIFT BOX ============ -->
+<div id="giftbox-screen" class="screen">
+  <div class="screen-inner">
+    <h2 class="sec-title">Gift Box 🎁</h2>
+    <p class="sec-sub">pilih satu kotak~</p>
+    <div class="gift-grid" id="gift-grid"></div>
+    <div id="gift-result" style="text-align:center; margin-top:18px; display:none;">
+      <div style="font-size:40px;">🌸🐱</div>
+      <p class="font-title" style="font-size:16px;">Semoga hari kamu selalu menyenangkan 🌸</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECRET ENDING ============ -->
+<div id="secret-screen" class="screen">
+  <div class="screen-inner" id="secret-inner" style="text-align:center; position:relative;">
+    <div id="secret-lines">
+      <p class="secret-line">Makasih ya...</p>
+      <p class="secret-line">Udah mau buka web kecil ini.</p>
+      <p class="secret-line">Semoga kamu suka.</p>
+      <p class="secret-line">Maaf ya kalau Bibil kadang nggak chat Papay...</p>
+      <p class="secret-line">Sebenernya aku pengen banget hiks 😭</p>
+      <p class="secret-line">Semoga hari kamu selalu baik ya.</p>
+    </div>
+    <div id="hug-stage" style="opacity:0; transition:opacity 1s ease; margin-top:20px;">
+      <button class="btn-cute" onclick="doHug()">🐱 Peluk Virtual</button>
+      <div id="final-line" class="font-title" style="margin-top:18px; font-size:18px; opacity:0; transition:opacity 1s ease;">See you again, Papayyyy 🌸</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACHIEVEMENT / GENERIC MODAL ============ -->
+<div id="achievement-modal" style="position:fixed; inset:0; z-index:400; display:none; align-items:center; justify-content:center; background:rgba(107,91,110,.5); backdrop-filter:blur(6px);">
+  <div class="card" style="padding:30px; text-align:center; max-width:300px;">
+    <div id="achv-emoji" style="font-size:52px;">🏆</div>
+    <h3 class="font-title" id="achv-title" style="margin:10px 0 4px;">Badge!</h3>
+    <p class="font-accent" id="achv-msg" style="font-size:14px; color:var(--text-soft);"></p>
+    <button class="btn-cute" style="margin-top:16px; padding:10px 22px; font-size:14px;" onclick="closeAchv()">Yeay!</button>
+  </div>
+</div>
+
+<!-- IDLE CAT -->
+<div id="idle-cat"><div class="bubble" id="idle-bubble">Meong?</div><div class="emoji">🐱</div></div>
+
+<!-- BACK BUTTON (shown on inner pages) -->
+<div class="top-bar" id="top-bar" style="display:none;">
+  <button class="back-btn" onclick="goToHome()">←</button>
+  <div></div>
+</div>
+
+<script>
+/* =========================================================
+   ⚙️ EDIT ZONE #3 — FOTO & TEKS
+   Ganti emoji di array PHOTOS dengan <img src="..."> kalau mau pasang foto asli:
+   contoh: {img:"/mnt/user-data/uploads/foto1.jpg", cap:"..."}
+========================================================= */
+const PHOTOS = [
+  {img:"WhatsApp Image 2026-07-08 at 02.05.54.jpeg", cap:"Mommyyyy 🌸"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.55 (1).jpeg", cap:"Kok gemash ya kak"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.55 (2).jpeg", cap:"INI LUCU BANGETTT TAUK"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.55.jpeg", cap:"gagah banget ngerokok"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.56 (1).jpeg", cap:"muahhh"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.56 (2).jpeg", cap:"manis banget senyumannya :3"},
+  {img:"WhatsApp Image 2026-07-08 at 02.05.56.jpeg", cap:"semuanya cantik banget 🐱🌸"},
+];
+
+/* ================= STATE ================= */
+const state = {
+  galleryViewed: new Set(),
+  catGameDone: false,
+  gardenDone: false,
+  giftDone: false,
+  eggsFound: new Set(),
+  totalEggs: 19,
+};
+
+/* ================= UTIL ================= */
+function $(id){ return document.getElementById(id); }
+function showToast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  $('top-bar').style.display = id==='home-screen' ? 'none' : 'flex';
+  window.scrollTo(0,0);
+}
+function goToHome(){ showScreen('home-screen'); checkSecretUnlock(); }
+
+/* ripple + navigate for home cards */
+function rippleThenGo(e, target){
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const r = document.createElement('span');
+  r.className='ripple';
+  r.style.left = (e.clientX-rect.left-10)+'px';
+  r.style.top = (e.clientY-rect.top-10)+'px';
+  r.style.width=r.style.height='20px';
+  card.appendChild(r);
+  setTimeout(()=>r.remove(),650);
+  setTimeout(()=>{
+    if(target==='locked'){
+      showToast('Selesain semua dulu yaa ⭐');
+      return;
+    }
+    if(target==='gallery') showScreen('gallery-screen');
+    if(target==='catgame') showScreen('catgame-screen');
+    if(target==='garden') showScreen('garden-screen');
+    if(target==='giftbox') showScreen('giftbox-screen');
+    if(target==='secret') showScreen('secret-screen'), startSecret();
+  },160);
+}
+
+/* =========================================================
+   1. LOADING SCREEN
+========================================================= */
+const loadingTexts = ["Menyiapkan sesuatu...","Mengumpulkan bunga...","Mencari kucing...","Hampir selesai..."];
+let li=0;
+const loadTextInterval = setInterval(()=>{
+  li=(li+1)%loadingTexts.length;
+  $('loading-text').style.opacity=0;
+  setTimeout(()=>{ $('loading-text').textContent=loadingTexts[li]; $('loading-text').style.opacity=1; },250);
+},900);
+$('loading-text').style.transition='opacity .25s ease';
+
+let prog=0;
+const progInterval = setInterval(()=>{
+  prog += Math.random()*14+6;
+  if(prog>=100){ prog=100; clearInterval(progInterval); clearInterval(loadTextInterval); finishLoading(); }
+  $('progress-fill').style.width=prog+'%';
+},280);
+
+function finishLoading(){
+  setTimeout(()=>{
+    showScreen('landing-screen');
+    playLandingSequence();
+  },400);
+}
+
+/* =========================================================
+   2. LANDING SEQUENCE
+========================================================= */
+function playLandingSequence(){
+  const lines=['line1','line2','line3'];
+  lines.forEach((id,i)=>{
+    setTimeout(()=>{ $(id).classList.add('show'); },700*i+300);
+  });
+  setTimeout(()=>{
+    $('enter-btn-wrap').style.opacity=1;
+    tryPlayMusic();
+  }, 700*lines.length + 500);
+}
+
+/* =========================================================
+   3. MUSIC
+========================================================= */
+function tryPlayMusic(){
+  const audio=$('bg-music');
+  audio.volume=0.35;
+  const p=audio.play();
+  if(p!==undefined){
+    p.catch(()=>{ $('music-btn').style.display='block'; });
+  }
+}
+$('music-btn').addEventListener('click',()=>{
+  $('bg-music').play();
+  $('music-btn').style.display='none';
+});
+
+/* =========================================================
+   4. BACKGROUND AMBIENCE (clouds, sakura, sparkle, hearts)
+========================================================= */
+function initSky(){
+  const sky=$('sky-layer');
+  for(let i=0;i<4;i++){
+    const c=document.createElement('div');
+    c.className='cloud'; c.textContent='☁️';
+    c.style.fontSize=(30+Math.random()*30)+'px';
+    c.style.top=(5+Math.random()*30)+'%';
+    c.style.animationDuration=(40+Math.random()*30)+'s';
+    c.style.animationDelay=(-Math.random()*40)+'s';
+    sky.appendChild(c);
+  }
+spawnFalling('🌸','petal',8,9000);
+  spawnFalling('✨','sparkle-fall',6,7000);
+  spawnFalling('💗','heart-fall',2,12000);
+}
+function spawnFalling(char, cls, count, duration){
+  const sky=$('sky-layer');
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className=cls; el.textContent=char;
+      el.style.left=Math.random()*100+'%';
+      el.style.fontSize=(12+Math.random()*10)+'px';
+      el.style.setProperty('--drift',(Math.random()*80-40)+'px');
+      el.style.animation=`fallDown ${duration/1000+Math.random()*4}s linear`;
+      sky.appendChild(el);
+      setTimeout(()=>el.remove(), duration+4000);
+    }, Math.random()*duration);
+  }
+  setInterval(()=>spawnFalling(char,cls,1,duration), duration/count);
+}
+initSky();
+
+/* =========================================================
+   5. GALLERY
+========================================================= */
+function initGallery(){
+  const wrap=$('polaroid-wrap');
+  PHOTOS.forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='polaroid';
+    el.style.setProperty('--rot',(Math.random()*10-5)+'deg');
+    el.innerHTML=`<div class="ph"><img src="${p.img}" alt="${p.cap}" style="width:100%;height:100%;object-fit:cover;border-radius:2px;display:block;"></div><div class="cap">${p.cap} 🐾</div>`;
+    el.onclick=()=>openLightbox(i);
+    wrap.appendChild(el);
+  });
+}
+let lbIndex=0;
+function openLightbox(i){
+  lbIndex=i;
+  $('lightbox-photo').innerHTML=`<img src="${PHOTOS[i].img}" alt="${PHOTOS[i].cap}" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;">`;
+  $('lightbox').classList.add('active');
+  state.galleryViewed.add(i);
+  if(state.galleryViewed.size>=PHOTOS.length){ checkSecretUnlock(); }
+}
+function closeLightbox(){ $('lightbox').classList.remove('active'); }
+let touchStartX=0;
+$('lightbox').addEventListener('touchstart',e=>touchStartX=e.changedTouches[0].screenX);
+$('lightbox').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].screenX-touchStartX;
+  if(Math.abs(dx)>40){
+    lbIndex = dx<0 ? (lbIndex+1)%PHOTOS.length : (lbIndex-1+PHOTOS.length)%PHOTOS.length;
+    openLightbox(lbIndex);
+  }
+});
+initGallery();
+
+/* =========================================================
+   6. CAT GAME
+========================================================= */
+let catCaught=0, catGameRunning=false, catSpeed=2200, catGameSession=0;
+function startCatGame(){
+  catGameSession++;
+  const mySession = catGameSession;
+  catGameRunning=true; catCaught=0;
+  $('cat-progress').textContent=`Tangkap 10 kucing! (0/10)`;
+  $('catgame-area').innerHTML='';
+  catSpeed=2200;
+  spawnRunnerCat(mySession);
+}
+function spawnRunnerCat(session){
+  if(session!==catGameSession || !catGameRunning || catCaught>=10) return;
+  const area=$('catgame-area');
+  const cat=document.createElement('div');
+  cat.className='runner-cat'; cat.textContent='🐱';
+  const areaRect = area.getBoundingClientRect();
+  cat.style.left = Math.random()*(areaRect.width-40)+'px';
+  cat.style.top = Math.random()*(areaRect.height-40)+'px';
+  cat.onclick=()=>{
+    if(session!==catGameSession) return;
+    catCaught++;
+    $('cat-progress').textContent=`Tangkap 10 kucing! (${catCaught}/10)`;
+    cat.remove();
+    catSpeed=Math.max(700, catSpeed-140);
+    if(catCaught>=10){ finishCatGame(); }
+  };
+  area.appendChild(cat);
+  setTimeout(()=>{ if(cat.parentNode){ cat.remove(); spawnRunnerCat(session); } }, catSpeed+800);
+  if(catCaught<10) setTimeout(()=>spawnRunnerCat(session), catSpeed*0.5);
+}
+function finishCatGame(){
+  catGameRunning=false;
+  $('catgame-area').innerHTML='';
+  fireConfetti();
+  state.catGameDone=true;
+  showAchv('🐱','Cat Hunter','Papay jago nangkep kucing 😭');
+  checkSecretUnlock();
+}
+
+/* =========================================================
+   7. FLOWER GARDEN
+========================================================= */
+const GARDEN_TOTAL=12;
+let gardenBloomed=0;
+function initGarden(){
+  const grid=$('garden-grid');
+  grid.innerHTML='';
+  for(let i=0;i<GARDEN_TOTAL;i++){
+    const b=document.createElement('div');
+    b.className='bud'; b.textContent='🌱';
+    b.onclick=()=>{
+      if(b.classList.contains('bloomed')) return;
+      b.classList.add('bloomed');
+      b.textContent=['🌸','🌷','🌼','🌺'][Math.floor(Math.random()*4)];
+      gardenBloomed++;
+      $('garden-progress').textContent=`Klik bunga buat mekarin (${gardenBloomed}/${GARDEN_TOTAL})`;
+      if(gardenBloomed>=GARDEN_TOTAL) finishGarden();
+    };
+    grid.appendChild(b);
+  }
+}
+function finishGarden(){
+  const scene=$('garden-scene');
+  scene.innerHTML='';
+  for(let i=0;i<3;i++){
+    const bf=document.createElement('div');
+    bf.className='butterfly'; bf.textContent='🦋';
+    bf.style.left=(10+i*30)+'%'; bf.style.top='0px';
+    bf.style.animationDelay=(i*0.6)+'s';
+    scene.appendChild(bf);
+  }
+  const bird=document.createElement('div');
+  bird.className='bird'; bird.textContent='🐦';
+  bird.style.left='60%'; bird.style.top='6px';
+  scene.appendChild(bird);
+  $('sky-layer').style.filter='brightness(1.12)';   // ← ini yang diganti
+  state.gardenDone=true;
+  showToast('Taman Papayyyy udah mekar semua 🌸');
+  checkSecretUnlock();
+}
+initGarden();
+
+/* =========================================================
+   8. GIFT BOX
+========================================================= */
+const correctBox = Math.floor(Math.random()*6);
+function initGiftBox(){
+  const grid=$('gift-grid');
+  grid.innerHTML='';
+  for(let i=0;i<6;i++){
+    const g=document.createElement('div');
+    g.className='gift'; g.textContent='🎁';
+    g.onclick=()=>{
+      if(g.classList.contains('opened')) return;
+      g.classList.add('opened');
+      if(i===correctBox){
+        g.textContent='🌸';
+        fireConfetti();
+        $('gift-result').style.display='block';
+        state.giftDone=true;
+        checkSecretUnlock();
+      }else{
+        g.textContent='📭';
+        showToast('Yah kosong 😭');
+      }
+    };
+    grid.appendChild(g);
+  }
+}
+initGiftBox();
+
+/* =========================================================
+   9. EASTER EGGS
+========================================================= */
+const EGG_TYPES = [
+  ...Array(10).fill('🐱'),
+  ...Array(5).fill('🌸'),
+  ...Array(3).fill('⭐'),
+  '🦋golden'
+];
+function initEggs(){
+  EGG_TYPES.forEach((type,idx)=>{
+    const el=document.createElement('div');
+    el.className='egg';
+    el.textContent = type==='🦋golden' ? '🦋' : type;
+    if(type==='🦋golden') el.style.filter='sepia(1) saturate(4) hue-rotate(-20deg)';
+    el.style.top = Math.random()*90+'%';
+    el.style.left = Math.random()*92+'%';
+    el.dataset.idx = idx;
+    el.onclick=(e)=>{
+      e.stopPropagation();
+      if(state.eggsFound.has(idx)) return;
+      state.eggsFound.add(idx);
+      el.classList.add('found');
+      $('egg-counter').textContent=`🥚 ${state.eggsFound.size}/${state.totalEggs}`;
+      spawnClickSparkle(e.clientX,e.clientY);
+      if(state.eggsFound.size>=state.totalEggs){
+        showAchv('🏆','Ultimate Explorer','Semua easter egg ketemu! Papay teliti banget 😭✨');
+      }
+    };
+    document.body.appendChild(el);
+  });
+}
+initEggs();
+
+/* =========================================================
+   10. IDLE CAT
+========================================================= */
+let idleTimer;
+const idleLines = ["Meong?","Kok diem aja 😭"];
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(showIdleCat, 20000);
+}
+function showIdleCat(){
+  const cat=$('idle-cat');
+  $('idle-bubble').textContent = idleLines[Math.floor(Math.random()*idleLines.length)];
+  cat.classList.add('show');
+  setTimeout(()=>cat.classList.remove('show'), 3200);
+  resetIdleTimer();
+}
+['mousemove','touchstart','click','keydown','scroll'].forEach(ev=>window.addEventListener(ev,resetIdleTimer));
+resetIdleTimer();
+
+/* =========================================================
+   11. CURSOR SPARKLE ON CLICK
+========================================================= */
+function spawnClickSparkle(x,y){
+  for(let i=0;i<5;i++){
+    const s=document.createElement('div');
+    s.className='click-sparkle'; s.textContent='✨';
+    s.style.left=x+'px'; s.style.top=y+'px';
+    const ang=Math.random()*Math.PI*2, dist=20+Math.random()*30;
+    s.style.setProperty('--sx',Math.cos(ang)*dist+'px');
+    s.style.setProperty('--sy',Math.sin(ang)*dist+'px');
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),700);
+  }
+}
+document.addEventListener('click',(e)=>spawnClickSparkle(e.clientX,e.clientY));
+
+/* =========================================================
+   12. ACHIEVEMENT MODAL
+========================================================= */
+function showAchv(emoji,title,msg){
+  $('achv-emoji').textContent=emoji;
+  $('achv-title').textContent=title;
+  $('achv-msg').textContent=msg;
+  $('achievement-modal').style.display='flex';
+}
+function closeAchv(){ $('achievement-modal').style.display='none'; }
+
+/* =========================================================
+   13. CONFETTI
+========================================================= */
+function fireConfetti(){
+  if(typeof confetti!=='function') return;
+  confetti({particleCount:120, spread:80, origin:{y:0.6}, colors:['#ffb3d1','#cfe8d6','#f1ecfb','#ffffff']});
+}
+
+/* =========================================================
+   14. SECRET UNLOCK LOGIC
+========================================================= */
+function checkSecretUnlock(){
+  const galleryDone = state.galleryViewed.size>=PHOTOS.length;
+  const allDone = galleryDone && state.catGameDone && state.gardenDone && state.giftDone;
+  const card=$('secret-card');
+  if(allDone){
+    card.classList.remove('locked');
+    card.onclick=(e)=>rippleThenGo(e,'secret');
+    $('secret-label').textContent='🌙 Secret';
+  }
+}
+
+/* =========================================================
+   15. SECRET ENDING
+========================================================= */
+function startSecret(){
+  buildNightSky();
+  const lines=document.querySelectorAll('.secret-line');
+  lines.forEach((l,i)=>{
+    setTimeout(()=>l.classList.add('show'), 900*i+400);
+  });
+  setTimeout(()=>{ $('hug-stage').style.opacity=1; }, 900*lines.length+800);
+}
+function buildNightSky(){
+  const inner=$('secret-inner');
+  if(inner.querySelector('.star')) return;
+  for(let i=0;i<40;i++){
+    const st=document.createElement('div');
+    st.className='star';
+    const size=Math.random()*2+1;
+    st.style.width=st.style.height=size+'px';
+    st.style.left=Math.random()*100+'%';
+    st.style.top=Math.random()*60+'%';
+    st.style.animationDelay=Math.random()*3+'s';
+    inner.appendChild(st);
+  }
+  for(let i=0;i<6;i++){
+    const f=document.createElement('div');
+    f.className='firefly'; f.textContent='✨';
+    f.style.left=Math.random()*90+'%';
+    f.style.top=(40+Math.random()*40)+'%';
+    f.style.animationDelay=Math.random()*4+'s';
+    inner.appendChild(f);
+  }
+  const music=$('bg-music'); if(!music.paused) music.volume=0.15;
+}
+function doHug(){
+  fireConfetti();
+  const btnWrap = event.currentTarget.parentElement;
+  btnWrap.innerHTML = `<div class="cat-hug hugging">🐱💗🐱</div>`;
+ spawnFalling('🌸','petal',6,3000);
+  spawnFalling('💗','heart-fall',5,3000);
+  setTimeout(()=>{ $('final-line').style.opacity=1; }, 900);
+}
+
+/* =========================================================
+   16. DYNAMIC RIPPLE FIX (ensure card has position relative)
+========================================================= */
+document.querySelectorAll('.home-card').forEach(c=>c.style.position='relative');
+</script>
+</body>
+</html>
